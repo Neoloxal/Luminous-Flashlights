@@ -1,6 +1,7 @@
 package com.neoloxal.luminous_flashlights;
 
 import com.mojang.logging.LogUtils;
+import com.neoloxal.luminous_flashlights.item.data_component.ModDataComponents;
 import com.neoloxal.luminous_flashlights.item.ModItems;
 import com.neoloxal.paint_palette_lib.Palette;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -22,6 +23,7 @@ public class LuminousFlashlights {
         Palette.enableDemoContent = false;
         Palette.registerMod(MODID, modEventBus);
 
+        ModDataComponents.register(modEventBus);
         MOD_ITEMS.register(modEventBus);
 
         modEventBus.register(this);
