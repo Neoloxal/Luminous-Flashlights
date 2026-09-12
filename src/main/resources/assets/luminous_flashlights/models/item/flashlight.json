@@ -1,3 +1,11 @@
 {
-  "parent": "luminous_flashlights:item/flashlight_base"
+  "parent": "luminous_flashlights:item/flashlight/off/white_flashlight",
+  "overrides": [
+    {
+      "predicate": {
+          "luminous_flashlights:enabled": 1.0
+      },
+      "model": "luminous_flashlights:item/flashlight/on/white_flashlight"
+    }
+  ]
 }

@@ -25,6 +25,7 @@ public class LuminousFlashlights {
         MOD_ITEMS.register(modEventBus);
 
         modEventBus.register(this);
+        modEventBus.register(LuminousFlashlightsClient.class);
     }
 
     @SubscribeEvent
