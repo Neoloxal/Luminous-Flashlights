@@ -12,7 +12,7 @@ public class ModItems extends ItemRegistrar {
 
     @Override
     protected void registerItems() {
-        basicItem("flashlight", () -> new Flashlight(new Item.Properties()));
+        basicItem("flashlight", () -> new Flashlight(new Item.Properties().stacksTo(1)));
         Palette.Canvas.generateName(getItem("flashlight"));
     }
 }
