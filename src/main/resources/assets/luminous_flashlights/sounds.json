@@ -1,0 +1,22 @@
+{
+  "swap_lens": {
+    "subtitle": "sounds.luminous_flashlights.swap_lens",
+    "sounds": [
+      "luminous_flashlights:swap_lens_1",
+      "luminous_flashlights:swap_lens_2",
+      "luminous_flashlights:swap_lens_3"
+    ]
+  },
+  "flashlight_on": {
+    "subtitle": "sounds.luminous_flashlights.flashlight_on",
+    "sounds": [
+      "luminous_flashlights:flashlight_on"
+    ]
+  },
+  "flashlight_off": {
+    "subtitle": "sounds.luminous_flashlights.flashlight_off",
+    "sounds": [
+      "luminous_flashlights:flashlight_off"
+    ]
+  }
+}

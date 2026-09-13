@@ -1,7 +1,6 @@
 package com.neoloxal.luminous_flashlights.item.data_component;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,22 +10,23 @@ import net.minecraft.util.StringRepresentable;
 import java.util.function.IntFunction;
 
 public enum Color implements StringRepresentable {
-    RED("red", 0f, 0xff0000, 6f),
-    ORANGE("orange", 1f, 0xfca103, 5f),
-    YELLOW("yellow", 2f, 0xfce703, 5f),
-    LIME("lime", 3f, 0xbefc03, 5f),
-    GREEN("green", 4f, 0x35fc03, 5f),
-    CYAN("cyan", 5f, 0x03fcce, 5f),
-    LIGHT_BLUE("light_blue", 6f, 0x03bafc, 6f),
-    BLUE("blue", 7f, 0x036ffc, 6f),
-    PURPLE("purple", 8f, 0x7b03fc, 6f),
-    MAGENTA("magenta", 9f, 0xe600ff, 6f),
-    PINK("pink", 10f, 0xff0077, 6f),
-    WHITE("white", 11f, 0xffffff, 4f),
-    LIGHT_GRAY("light_gray", 12f, 0xffffff, 2f),
-    GRAY("gray", 13f, 0xffffff, 1f),
-    BLACK("black", 14f, 0x474747, 0f),
-    BROWN("brown", 15f, 0x542700, 7f),
+    GLASS("glass", 0f, 0xffffff, 0f),
+    RED("red", 1f, 0xff0000, 6f),
+    ORANGE("orange", 2f, 0xfca103, 5f),
+    YELLOW("yellow", 3f, 0xfce703, 5f),
+    LIME("lime", 4f, 0xbefc03, 5f),
+    GREEN("green", 5f, 0x35fc03, 5f),
+    CYAN("cyan", 6f, 0x03fcce, 5f),
+    LIGHT_BLUE("light_blue", 7f, 0x03bafc, 6f),
+    BLUE("blue", 8f, 0x036ffc, 6f),
+    PURPLE("purple", 9f, 0x7b03fc, 6f),
+    MAGENTA("magenta", 10f, 0xe600ff, 6f),
+    PINK("pink", 11f, 0xff0077, 6f),
+    WHITE("white", 12f, 0xffffff, 4f),
+    LIGHT_GRAY("light_gray", 13f, 0xffffff, 2f),
+    GRAY("gray", 14f, 0xffffff, 1f),
+    BLACK("black", 15f, 0x474747, 0f),
+    BROWN("brown", 16f, 0x542700, 7f),
     NULL("null", -1f, 0xdf03fc, 10f);
 
     final int hex_color;

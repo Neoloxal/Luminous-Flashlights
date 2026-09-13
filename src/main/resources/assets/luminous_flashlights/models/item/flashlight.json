@@ -2,16 +2,31 @@
   "parent": "luminous_flashlights:item/flashlight_base",
   "overrides": [
     {
+    "predicate": {
+      "luminous_flashlights:enabled": 0.0,
+      "luminous_flashlights:color": 0.0
+    },
+    "model": "luminous_flashlights:item/flashlight/glass_flashlight"
+  },
+    {
+      "predicate": {
+        "luminous_flashlights:enabled": 1.0,
+        "luminous_flashlights:color": 0.0
+      },
+      "model": "luminous_flashlights:item/flashlight/glass_flashlight"
+    },
+
+    {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 0.0
+        "luminous_flashlights:color": 1.0
       },
       "model": "luminous_flashlights:item/flashlight/off/red_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 0.0
+        "luminous_flashlights:color": 1.0
       },
       "model": "luminous_flashlights:item/flashlight/on/red_flashlight"
     },
@@ -19,14 +34,14 @@
     {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 1.0
+        "luminous_flashlights:color": 2.0
       },
       "model": "luminous_flashlights:item/flashlight/off/orange_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 1.0
+        "luminous_flashlights:color": 2.0
       },
       "model": "luminous_flashlights:item/flashlight/on/orange_flashlight"
     },
@@ -34,14 +49,14 @@
     {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 2.0
+        "luminous_flashlights:color": 3.0
       },
       "model": "luminous_flashlights:item/flashlight/off/yellow_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 2.0
+        "luminous_flashlights:color": 3.0
       },
       "model": "luminous_flashlights:item/flashlight/on/yellow_flashlight"
     },
@@ -49,14 +64,14 @@
     {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 3.0
+        "luminous_flashlights:color": 4.0
       },
       "model": "luminous_flashlights:item/flashlight/off/lime_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 3.0
+        "luminous_flashlights:color": 4.0
       },
       "model": "luminous_flashlights:item/flashlight/on/lime_flashlight"
     },
@@ -64,14 +79,14 @@
     {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 4.0
+        "luminous_flashlights:color": 5.0
       },
       "model": "luminous_flashlights:item/flashlight/off/green_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 4.0
+        "luminous_flashlights:color": 5.0
       },
       "model": "luminous_flashlights:item/flashlight/on/green_flashlight"
     },
@@ -79,14 +94,14 @@
     {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 5.0
+        "luminous_flashlights:color": 6.0
       },
       "model": "luminous_flashlights:item/flashlight/off/cyan_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 5.0
+        "luminous_flashlights:color": 6.0
       },
       "model": "luminous_flashlights:item/flashlight/on/cyan_flashlight"
     },
@@ -94,14 +109,14 @@
     {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 6.0
+        "luminous_flashlights:color": 7.0
       },
       "model": "luminous_flashlights:item/flashlight/off/light_blue_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 6.0
+        "luminous_flashlights:color": 7.0
       },
       "model": "luminous_flashlights:item/flashlight/on/light_blue_flashlight"
     },
@@ -109,14 +124,14 @@
     {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 7.0
+        "luminous_flashlights:color": 8.0
       },
       "model": "luminous_flashlights:item/flashlight/off/blue_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 7.0
+        "luminous_flashlights:color": 8.0
       },
       "model": "luminous_flashlights:item/flashlight/on/blue_flashlight"
     },
@@ -124,14 +139,14 @@
     {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 8.0
+        "luminous_flashlights:color": 9.0
       },
       "model": "luminous_flashlights:item/flashlight/off/purple_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 8.0
+        "luminous_flashlights:color": 9.0
       },
       "model": "luminous_flashlights:item/flashlight/on/purple_flashlight"
     },
@@ -139,14 +154,14 @@
     {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 9.0
+        "luminous_flashlights:color": 10.0
       },
       "model": "luminous_flashlights:item/flashlight/off/magenta_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 9.0
+        "luminous_flashlights:color": 10.0
       },
       "model": "luminous_flashlights:item/flashlight/on/magenta_flashlight"
     },
@@ -154,14 +169,14 @@
     {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 10.0
+        "luminous_flashlights:color": 11.0
       },
       "model": "luminous_flashlights:item/flashlight/off/pink_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 10.0
+        "luminous_flashlights:color": 11.0
       },
       "model": "luminous_flashlights:item/flashlight/on/pink_flashlight"
     },
@@ -169,14 +184,14 @@
     {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 11.0
+        "luminous_flashlights:color": 12.0
       },
       "model": "luminous_flashlights:item/flashlight/off/white_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 11.0
+        "luminous_flashlights:color": 12.0
       },
       "model": "luminous_flashlights:item/flashlight/on/white_flashlight"
     },
@@ -184,14 +199,14 @@
     {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 12.0
+        "luminous_flashlights:color": 13.0
       },
       "model": "luminous_flashlights:item/flashlight/off/light_gray_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 12.0
+        "luminous_flashlights:color": 13.0
       },
       "model": "luminous_flashlights:item/flashlight/on/light_gray_flashlight"
     },
@@ -199,14 +214,14 @@
     {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 13.0
+        "luminous_flashlights:color": 14.0
       },
       "model": "luminous_flashlights:item/flashlight/off/gray_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 13.0
+        "luminous_flashlights:color": 14.0
       },
       "model": "luminous_flashlights:item/flashlight/on/gray_flashlight"
     },
@@ -214,14 +229,14 @@
     {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 14.0
+        "luminous_flashlights:color": 15.0
       },
       "model": "luminous_flashlights:item/flashlight/off/black_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 14.0
+        "luminous_flashlights:color": 15.0
       },
       "model": "luminous_flashlights:item/flashlight/on/black_flashlight"
     },
@@ -229,14 +244,14 @@
     {
       "predicate": {
         "luminous_flashlights:enabled": 0.0,
-        "luminous_flashlights:color": 15.0
+        "luminous_flashlights:color": 16.0
       },
       "model": "luminous_flashlights:item/flashlight/off/brown_flashlight"
     },
     {
       "predicate": {
         "luminous_flashlights:enabled": 1.0,
-        "luminous_flashlights:color": 15.0
+        "luminous_flashlights:color": 16.0
       },
       "model": "luminous_flashlights:item/flashlight/on/brown_flashlight"
     }
