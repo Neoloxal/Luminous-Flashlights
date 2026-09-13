@@ -47,11 +47,30 @@ neoForge {
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
     runs {
-        client {
+        configureEach {
+            // Automatically accept the Minecraft EULA for development
+            systemProperty 'net.minecraft.eula.agree', 'true'
+
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+
+        clientPlayerOne {
             client()
+            gameDirectory = project.file('runs/client_player_one')
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            programArguments.addAll '--username', 'neo', '--uuid', '00000000-0000-0000-0000-000000000001', '--server', 'localhost', '--port', '60740'
+        }
+
+        clientPlayerTwo {
+            client()
+            gameDirectory = project.file('runs/client_player_two')
+
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            programArguments.addAll '--username', 'evil_neo', '--uuid', '00000000-0000-0000-0000-000000000002', '--server', 'localhost', '--port', '60740'
         }
 
         server {

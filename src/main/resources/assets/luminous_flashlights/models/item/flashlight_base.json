@@ -3,7 +3,8 @@
 	"credit": "Made with Blockbench",
 	"textures": {
 		"body": "luminous_flashlights:item/flashlight_base",
-		"particle": "luminous_flashlights:item/white_flashlight_off"
+		"lens": "luminous_flashlights:item/placeholder_lens",
+		"particle": "luminous_flashlights:item/flashlight_base"
 	},
 	"elements": [
 		{
