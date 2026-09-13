@@ -2,9 +2,9 @@
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
 	"textures": {
+		"particle": "luminous_flashlights:item/flashlight_base",
 		"body": "luminous_flashlights:item/flashlight_base",
-		"lens": "luminous_flashlights:item/placeholder_lens",
-		"particle": "luminous_flashlights:item/flashlight_base"
+		"lens": "luminous_flashlights:item/placeholder_lens"
 	},
 	"elements": [
 		{
@@ -67,9 +67,13 @@
 		"firstperson_lefthand": {
 			"translation": [4, 1.5, 0]
 		},
+		"ground": {
+			"translation": [0, 2, 0],
+			"scale": [0.5, 0.5, 0.5]
+		},
 		"gui": {
-			"rotation": [135, -45, 45],
-			"translation": [-1, 0, 0]
+			"rotation": [135, -45, 135],
+			"translation": [-1, 1, 0]
 		},
 		"head": {
 			"rotation": [0, -180, 0],

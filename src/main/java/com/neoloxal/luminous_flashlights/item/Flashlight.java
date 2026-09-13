@@ -13,6 +13,8 @@ import foundry.veil.api.client.render.light.renderer.LightRenderHandle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -20,6 +22,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -64,12 +67,13 @@ public class Flashlight extends Item {
 
     private void addLightData(ItemStack stack, Player player) {
         SpotLightData lightData = new SpotLightData();
-        lightData.setColor(
-                stack.getOrDefault(ModDataComponents.COLOR.get(), Color.WHITE).getHexColor()
-        );
+        Color color = stack.getOrDefault(ModDataComponents.COLOR.get(), Color.WHITE);
+        lightData.setColor(color.getHexColor());
+        lightData.setBrightness(color.getBrightness());
         lightData.setDistance(50);
-        lightData.setSize(0.5f);
+        lightData.setSize(0.75f);
         lightData.setOcclusionEnabled(true);
+        lightData.setInscatteringStrength(2.5f);
 
         if (ACTIVE_LIGHTS.containsKey(player.getUUID())) {
             ACTIVE_LIGHTS.get(player.getUUID()).free();
@@ -93,8 +97,11 @@ public class Flashlight extends Item {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
-        if (!isSelected && stack.getOrDefault(LibDataComponents.TOGGLE.get(), false)) {
-            if (entity instanceof Player player) {
+
+        if (entity instanceof Player player) {
+            boolean selected = isSelected || player.getOffhandItem().is(stack.getItem());
+
+            if (!selected && stack.getOrDefault(LibDataComponents.TOGGLE.get(), false)) {
                 stack.set(LibDataComponents.TOGGLE.get(), false);
                 turnOffLight(player);
                 toggleOff(player);
@@ -123,7 +130,9 @@ public class Flashlight extends Item {
             orientation.lookAlong(playerRotation, new Vector3f(0, 1, 0));
             lightData.getOrientationMutable().set(orientation);
 
-            Vec3 position = player.getEyePosition(partialTicks);
+            Vec3 localOffset = new Vec3(-1, -0.75, 0.9);
+            Vec3 worldOffset = localOffset.xRot((float) Math.toRadians(-player.getViewXRot(partialTicks))).yRot((float) Math.toRadians(-player.getViewYRot(partialTicks)));
+            Vec3 position = player.getEyePosition(partialTicks).add(worldOffset);
             lightData.getPositionMutable().set(Vec3Utils.toVector3d(position));
         }
     }
@@ -167,5 +176,15 @@ public class Flashlight extends Item {
             stack.set(LibDataComponents.TOGGLE.get(), false);
             ((Flashlight) stack.getItem()).turnOffLight(player);
         }
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+
+        Color color = stack.getOrDefault(ModDataComponents.COLOR.get(), Color.WHITE);
+        tooltipComponents.add(
+                Component.translatable("item.luminous_flashlights.flashlight.tooltip.%s".formatted(color.getSerializedName()))
+                        .setStyle(Style.EMPTY.withColor(color.getHexColor())));
     }
 }

@@ -11,21 +11,44 @@ import net.minecraft.util.StringRepresentable;
 import java.util.function.IntFunction;
 
 public enum Color implements StringRepresentable {
-    WHITE("white", 0xffffff, 0f),
-    RED("red", 0xff0000, 1f);
+    RED("red", 0f, 0xff0000, 6f),
+    ORANGE("orange", 1f, 0xfca103, 5f),
+    YELLOW("yellow", 2f, 0xfce703, 5f),
+    LIME("lime", 3f, 0xbefc03, 5f),
+    GREEN("green", 4f, 0x35fc03, 5f),
+    CYAN("cyan", 5f, 0x03fcce, 5f),
+    LIGHT_BLUE("light_blue", 6f, 0x03bafc, 6f),
+    BLUE("blue", 7f, 0x036ffc, 6f),
+    PURPLE("purple", 8f, 0x7b03fc, 6f),
+    MAGENTA("magenta", 9f, 0xe600ff, 6f),
+    PINK("pink", 10f, 0xff0077, 6f),
+    WHITE("white", 11f, 0xffffff, 4f),
+    LIGHT_GRAY("light_gray", 12f, 0xffffff, 2f),
+    GRAY("gray", 13f, 0xffffff, 1f),
+    BLACK("black", 14f, 0x474747, 0f),
+    BROWN("brown", 15f, 0x542700, 7f),
+    NULL("null", -1f, 0xdf03fc, 10f);
 
     final int hex_color;
+    final float brightness;
+
     final float identifier;
     final String name;
 
-    Color(String name, int hexColor, float identifier) {
+    Color(String name, float identifier, int hexColor, float brightness) {
         this.name = name;
-        this.hex_color = hexColor;
         this.identifier = identifier;
+
+        this.hex_color = hexColor;
+        this.brightness = brightness;
     }
 
     public int getHexColor() {
         return hex_color;
+    }
+
+    public float getBrightness() {
+        return brightness;
     }
 
     public float getIdentifier() {
