@@ -1,0 +1,42 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "darkness": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "light": {
+                  "light": {
+                    "max": 3
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "luminous_flashlights:flashlight"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "darkness"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "luminous_flashlights:flashlight"
+    ]
+  }
+}

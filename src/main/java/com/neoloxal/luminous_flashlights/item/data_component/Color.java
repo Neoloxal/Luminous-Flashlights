@@ -10,7 +10,7 @@ import net.minecraft.util.StringRepresentable;
 import java.util.function.IntFunction;
 
 public enum Color implements StringRepresentable {
-    GLASS("glass", 0f, 0xffffff, 0f),
+    GLASS("glass", 0f, 0xffffff, 0.5f),
     RED("red", 1f, 0xff0000, 6f),
     ORANGE("orange", 2f, 0xfca103, 5f),
     YELLOW("yellow", 3f, 0xfce703, 5f),

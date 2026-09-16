@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "L": {
+      "item": "minecraft:lever"
+    },
+    "P": {
+      "item": "minecraft:glass_pane"
+    },
+    "R": {
+      "item": "minecraft:redstone_lamp"
+    }
+  },
+  "pattern": [
+    "IPI",
+    "IRI",
+    " L "
+  ],
+  "result": {
+    "count": 1,
+    "id": "luminous_flashlights:flashlight"
+  }
+}
