@@ -10,12 +10,12 @@ import com.neoloxal.paint_palette_lib.utils.Vec3Utils;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.light.data.SpotLightData;
 import foundry.veil.api.client.render.light.renderer.LightRenderHandle;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -30,7 +30,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.LivingSwapItemsEvent;
@@ -141,9 +140,10 @@ public class Flashlight extends Item {
             boolean selected = isSelected || player.getOffhandItem().is(stack.getItem());
 
             if (!selected && stack.getOrDefault(LibDataComponents.TOGGLE.get(), false)) {
-                stack.set(LibDataComponents.TOGGLE.get(), false);
                 if (level.isClientSide()) {
                     turnOffLight(player);
+                } else {
+                    stack.set(LibDataComponents.TOGGLE.get(), false);
                 }
             }
         }
@@ -175,7 +175,7 @@ public class Flashlight extends Item {
             Vec3 localOffset = new Vec3(-0.4 * direction, -0.7, 0.8);
             float yRot = player.yBodyRot;
             if (isFirstPersonAndLocal) {
-                localOffset = new Vec3(-1.1 * direction, -0.75, 0.9);
+                localOffset = new Vec3(-0.9 * direction, -0.6, 0.9);
                 yRot = player.getViewYRot(partialTicks);
             }
 
@@ -237,7 +237,9 @@ public class Flashlight extends Item {
         tooltipComponents.add(
                 Component.translatable("item.luminous_flashlights.flashlight.tooltip.%s".formatted(color.getSerializedName()))
                         .setStyle(Style.EMPTY.withColor(color.getHexColor())));
-        tooltipComponents.add(Component.translatable("item.luminous_flashlights.flashlight.tooltip"));
+        tooltipComponents.add(Component.translatable("item.luminous_flashlights.flashlight.tooltip").setStyle(
+                Style.EMPTY.withColor(ChatFormatting.GRAY)
+        ));
     }
 
     @SubscribeEvent
