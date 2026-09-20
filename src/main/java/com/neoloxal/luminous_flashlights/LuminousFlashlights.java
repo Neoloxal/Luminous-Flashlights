@@ -1,5 +1,6 @@
 package com.neoloxal.luminous_flashlights;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import com.neoloxal.luminous_flashlights.datagen.ModBlockTagsProvider;
 import com.neoloxal.luminous_flashlights.datagen.ModItemTagsProvider;
@@ -8,20 +9,28 @@ import com.neoloxal.luminous_flashlights.item.Flashlight;
 import com.neoloxal.luminous_flashlights.item.data_component.Color;
 import com.neoloxal.luminous_flashlights.item.data_component.ModDataComponents;
 import com.neoloxal.luminous_flashlights.item.ModItems;
+import com.neoloxal.luminous_flashlights.packet.ScrollPayload;
 import com.neoloxal.luminous_flashlights.sounds.ModSounds;
 import com.neoloxal.paint_palette_lib.Palette;
 import com.neoloxal.paint_palette_lib.datagen.LibDataGenerators;
+import cpw.mods.util.Lazy;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.apache.commons.lang3.text.WordUtils;
+import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
 import java.util.Arrays;
@@ -58,6 +67,9 @@ public class LuminousFlashlights {
             translationRegistry.accept("sounds.luminous_flashlights.flashlight_on", "Flashlight turns on");
             translationRegistry.accept("sounds.luminous_flashlights.flashlight_off", "Flashlight turns off");
             translationRegistry.accept("sounds.luminous_flashlights.swap_lens", "Lens is swapped");
+            translationRegistry.accept("sounds.luminous_flashlights.focus_change", "Focus changes");
+
+            translationRegistry.accept("key.luminous_flashlights.flashlight_focus", "Change flashlight focus");
         });
 
         Palette.Canvas.createTagsGenerator(MODID, ModBlockTagsProvider::new, ModItemTagsProvider::new);
@@ -87,9 +99,37 @@ public class LuminousFlashlights {
         }
     }
 
+    @SubscribeEvent
+    public void registerPayloads(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar(MODID);
+
+        registrar.playToServer(
+                ScrollPayload.TYPE,
+                ScrollPayload.CODEC,
+                Flashlight::handleScroll
+        );
+    }
+
     private ItemStack flashlightOfColor(Color color) {
         ItemStack flashlight = MOD_ITEMS.getItem("flashlight").get().getDefaultInstance().copy();
         flashlight.set(ModDataComponents.COLOR.get(), color);
         return flashlight;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @EventBusSubscriber
+    public static class Keybinds {
+        public static final KeyMapping FLASHLIGHT_FOCUS = new KeyMapping(
+                "key.luminous_flashlights.flashlight_focus",
+                KeyConflictContext.IN_GAME,
+                InputConstants.Type.KEYSYM,
+                GLFW.GLFW_KEY_LEFT_ALT,
+                "key.categories.gameplay"
+        );
+
+        @SubscribeEvent
+        public static void register(RegisterKeyMappingsEvent event) {
+            event.register(FLASHLIGHT_FOCUS);
+        }
     }
 }

@@ -18,5 +18,14 @@
     "sounds": [
       "luminous_flashlights:flashlight_off"
     ]
+  },
+  "focus_change": {
+    "subtitle": "sounds.luminous_flashlights.focus_change",
+    "sounds": [
+      "luminous_flashlights:focus_change_1",
+      "luminous_flashlights:focus_change_2",
+      "luminous_flashlights:focus_change_3",
+      "luminous_flashlights:focus_change_4"
+    ]
   }
 }

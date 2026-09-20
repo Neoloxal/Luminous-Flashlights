@@ -19,7 +19,9 @@
   "item.luminous_flashlights.flashlight.tooltip.red": "Red",
   "item.luminous_flashlights.flashlight.tooltip.white": "White",
   "item.luminous_flashlights.flashlight.tooltip.yellow": "Yellow",
+  "key.luminous_flashlights.flashlight_focus": "Change flashlight focus",
   "sounds.luminous_flashlights.flashlight_off": "Flashlight turns off",
   "sounds.luminous_flashlights.flashlight_on": "Flashlight turns on",
+  "sounds.luminous_flashlights.focus_change": "Focus changes",
   "sounds.luminous_flashlights.swap_lens": "Lens is swapped"
 }

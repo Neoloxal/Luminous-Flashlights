@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.neoloxal.luminous_flashlights.LuminousFlashlights;
 import com.neoloxal.luminous_flashlights.item.data_component.Color;
 import com.neoloxal.luminous_flashlights.item.data_component.ModDataComponents;
+import com.neoloxal.luminous_flashlights.packet.ScrollPayload;
 import com.neoloxal.luminous_flashlights.sounds.ModSounds;
 import com.neoloxal.paint_palette_lib.builtin.LibDataComponents;
 import com.neoloxal.paint_palette_lib.utils.Vec3Utils;
@@ -28,9 +29,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.LivingSwapItemsEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
@@ -48,6 +51,9 @@ public class Flashlight extends Item {
 
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Map<UUID, Map<InteractionHand, LightRenderHandle<SpotLightData>>> ACTIVE_LIGHTS = new HashMap<>();
+
+    private static final float DEFAULT_DISTANCE = 35;
+    private static final float DEFAULT_SIZE = 0.5f;
 
     private static final List<Pair<Item, Color>> PANE_COLOR_MAP = List.of(
             new Pair<>(Items.GLASS_PANE, Color.GLASS),
@@ -108,8 +114,8 @@ public class Flashlight extends Item {
         Color color = stack.getOrDefault(ModDataComponents.COLOR.get(), Color.NULL);
         lightData.setColor(color.getHexColor());
         lightData.setBrightness(color.getBrightness());
-        lightData.setDistance(50);
-        lightData.setSize(0.75f);
+        lightData.setDistance(DEFAULT_DISTANCE);
+        lightData.setSize(DEFAULT_SIZE);
         lightData.setOcclusionEnabled(true);
         lightData.setInscatteringStrength(2.5f);
 
@@ -200,6 +206,12 @@ public class Flashlight extends Item {
             Vec3 worldOffset = localOffset.xRot((float) Math.toRadians(-player.getViewXRot(partialTicks))).yRot((float) Math.toRadians(-yRot));
             Vec3 position = player.getEyePosition(partialTicks).add(worldOffset);
             lightData.getPositionMutable().set(Vec3Utils.toVector3d(position));
+
+            double focus = stack.getOrDefault(ModDataComponents.FOCUS.get(), 0.0);
+            float baseBrightness = stack.getOrDefault(ModDataComponents.COLOR.get(), Color.GLASS).getBrightness();
+            lightData.setDistance((float) (DEFAULT_DISTANCE + Math.floor(focus) / 1.25f));
+            lightData.setSize(Math.max(0.1f, (float) (DEFAULT_SIZE - (Math.floor(focus) / 125))));
+            lightData.setBrightness((float) (baseBrightness + (focus / 12.5f)));
         }
     }
 
@@ -307,14 +319,45 @@ public class Flashlight extends Item {
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        ItemStack oldStackNoToggle = oldStack.copy();
-        oldStackNoToggle.remove(LibDataComponents.TOGGLE.get());
-        ItemStack newStackNoToggle = newStack.copy();
-        newStackNoToggle.remove(LibDataComponents.TOGGLE.get());
+        ItemStack oldStackNoToggleNoFocus = oldStack.copy();
+        oldStackNoToggleNoFocus.remove(LibDataComponents.TOGGLE.get());
+        oldStackNoToggleNoFocus.remove(ModDataComponents.FOCUS.get());
+        ItemStack newStackNoToggleNoFocus = newStack.copy();
+        newStackNoToggleNoFocus.remove(LibDataComponents.TOGGLE.get());
+        newStackNoToggleNoFocus.remove(ModDataComponents.FOCUS.get());
 
-        if (ItemStack.matches(oldStackNoToggle, newStackNoToggle) && !slotChanged) {
+        if (ItemStack.matches(oldStackNoToggleNoFocus, newStackNoToggleNoFocus) && !slotChanged) {
             return false;
         }
         return true;
+    }
+
+    @SubscribeEvent
+    public static void onScroll(InputEvent.MouseScrollingEvent event) {
+        if (LuminousFlashlights.Keybinds.FLASHLIGHT_FOCUS.isDown() && event.getScrollDeltaY() != 0) {
+            Player player = Minecraft.getInstance().player;
+            if (player != null &&
+                    player.getMainHandItem().is(LuminousFlashlights.MOD_ITEMS.getItem("flashlight"))) {
+                ClientPacketListener connection = Minecraft.getInstance().getConnection();
+                if (connection != null) {
+                    connection.send(new ScrollPayload(event.getScrollDeltaY()/4));
+                }
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    public static void handleScroll(ScrollPayload payload, IPayloadContext context) {
+        Player player = context.player();
+        ItemStack stack = player.getMainHandItem();
+
+        if (stack.is(LuminousFlashlights.MOD_ITEMS.getItem("flashlight"))) {
+            double focusOffset = ModDataComponents.Helper.scrollStack(stack, payload.scrollDelta());
+            double newFocus = stack.getOrDefault(ModDataComponents.FOCUS.get(), 0.0);
+            if (newFocus % 1.0 == 0 && Math.abs(focusOffset) > 0) {
+                player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.FOCUS_CHANGE.get(), SoundSource.PLAYERS);
+            }
+            player.displayClientMessage(Component.literal(String.valueOf(newFocus)), true);
+        }
     }
 }

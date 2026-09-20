@@ -16,6 +16,7 @@ public class ModSounds {
     public static final Supplier<SoundEvent> FLASHLIGHT_ON = registerSoundEvent("flashlight_on");
     public static final Supplier<SoundEvent> FLASHLIGHT_OFF = registerSoundEvent("flashlight_off");
     public static final Supplier<SoundEvent> SWAP_LENS = registerSoundEvent("swap_lens");
+    public static final Supplier<SoundEvent> FOCUS_CHANGE = registerSoundEvent("focus_change");
 
     private static Supplier<SoundEvent> registerSoundEvent(String name) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(LuminousFlashlights.MODID, name);
