@@ -78,8 +78,8 @@ public class Flashlight extends Item {
             new Pair<>(Items.BLACK_STAINED_GLASS_PANE, Color.BLACK),
             new Pair<>(Items.BROWN_STAINED_GLASS_PANE, Color.BROWN)
     );
-    private static final Map<Item, Color> PANE_MAP = PANE_COLOR_MAP.stream().collect(Collectors.toMap(Pair::getA, Pair::getB));;
-    private static final Map<Color, Item> COLOR_MAP = PANE_COLOR_MAP.stream().collect(Collectors.toMap(Pair::getB, Pair::getA));;
+    private static final Map<Item, Color> PANE_MAP = PANE_COLOR_MAP.stream().collect(Collectors.toMap(Pair::getA, Pair::getB));
+    private static final Map<Color, Item> COLOR_MAP = PANE_COLOR_MAP.stream().collect(Collectors.toMap(Pair::getB, Pair::getA));
 
     @Override
     public void verifyComponentsAfterLoad(ItemStack stack) {
@@ -231,8 +231,11 @@ public class Flashlight extends Item {
         playerList.forEach(playerInfo ->
             players.add(level.getPlayerByUUID(playerInfo.getProfile().getId())));
 
+        Set<UUID> unverifiedPlayers = new HashSet<>(ACTIVE_LIGHTS.keySet());
+
         for (Player player : players) {
             if (player == null) continue;
+            unverifiedPlayers.remove(player.getUUID());
 
             for (InteractionHand hand : InteractionHand.values()) {
                 ItemStack stack = player.getItemInHand(hand);
@@ -245,6 +248,10 @@ public class Flashlight extends Item {
                     }
                 }
             }
+        }
+
+        for (UUID unfoundPlayer : unverifiedPlayers) {
+            turnOffLights(unfoundPlayer);
         }
     }
 
