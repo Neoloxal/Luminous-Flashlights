@@ -2,6 +2,7 @@ package com.neoloxal.luminous_flashlights.item;
 
 import com.mojang.logging.LogUtils;
 import com.neoloxal.luminous_flashlights.LuminousFlashlights;
+import com.neoloxal.luminous_flashlights.hud.FocusOverlay;
 import com.neoloxal.luminous_flashlights.item.data_component.Color;
 import com.neoloxal.luminous_flashlights.item.data_component.ModDataComponents;
 import com.neoloxal.luminous_flashlights.packet.ScrollPayload;
@@ -27,8 +28,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
@@ -199,7 +203,7 @@ public class Flashlight extends Item {
             Vec3 localOffset = new Vec3(-0.4 * direction, -0.7, 0.8);
             float yRot = player.yBodyRot;
             if (isFirstPersonAndLocal) {
-                localOffset = new Vec3(-1 * direction, -0.6, 0.9);
+                localOffset = new Vec3(-1 * direction, -0.7, 0.9);
                 yRot = player.getViewYRot(partialTicks);
             }
 
@@ -329,6 +333,9 @@ public class Flashlight extends Item {
         if (ItemStack.matches(oldStackNoToggleNoFocus, newStackNoToggleNoFocus) && !slotChanged) {
             return false;
         }
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            FocusOverlay.showOverlay(40, true);
+        }
         return true;
     }
 
@@ -354,10 +361,20 @@ public class Flashlight extends Item {
         if (stack.is(LuminousFlashlights.MOD_ITEMS.getItem("flashlight"))) {
             double focusOffset = ModDataComponents.Helper.scrollStack(stack, payload.scrollDelta());
             double newFocus = stack.getOrDefault(ModDataComponents.FOCUS.get(), 0.0);
-            if (newFocus % 1.0 == 0 && Math.abs(focusOffset) > 0) {
-                player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.FOCUS_CHANGE.get(), SoundSource.PLAYERS);
+            //float volume = newFocus % 1 == 0 ? 1f : 0.5f;
+            if (newFocus % 1 == 0 && Math.abs(focusOffset) > 0) {
+                player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.FOCUS_CHANGE.get(), SoundSource.PLAYERS, 1f, 1f);
             }
-            player.displayClientMessage(Component.literal(String.valueOf(newFocus)), true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void clientTick(ClientTickEvent.Post event) {
+        FocusOverlay.clientTick();
+        if (Minecraft.getInstance().player != null) {
+            if (LuminousFlashlights.Keybinds.FLASHLIGHT_FOCUS.isDown()) {
+                FocusOverlay.showOverlay(10, false);
+            }
         }
     }
 }
