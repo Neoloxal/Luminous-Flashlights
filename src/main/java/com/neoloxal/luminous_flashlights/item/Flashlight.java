@@ -16,6 +16,7 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -46,7 +47,7 @@ public class Flashlight extends Item {
     }
 
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final Map<UUID, LightRenderHandle<SpotLightData>> ACTIVE_LIGHTS = new HashMap<>();
+    private static final Map<UUID, Map<InteractionHand, LightRenderHandle<SpotLightData>>> ACTIVE_LIGHTS = new HashMap<>();
 
     private static final List<Pair<Item, Color>> PANE_COLOR_MAP = List.of(
             new Pair<>(Items.GLASS_PANE, Color.GLASS),
@@ -91,20 +92,18 @@ public class Flashlight extends Item {
             }
         }
 
-        return InteractionResultHolder.consume(stack);
+        return InteractionResultHolder.pass(stack);
     }
 
     public static void toggleOn(Level level, Player player) {
-        LOGGER.debug("toggle on");
         level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.FLASHLIGHT_ON.get(), SoundSource.PLAYERS);
     }
 
     public static void toggleOff(Level level, Player player) {
-        LOGGER.debug("toggle off");
         level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.FLASHLIGHT_OFF.get(), SoundSource.PLAYERS);
     }
 
-    private void addLightData(ItemStack stack, Player player) {
+    private void addLightData(ItemStack stack, InteractionHand interactionHand, UUID pUUID) {
         SpotLightData lightData = new SpotLightData();
         Color color = stack.getOrDefault(ModDataComponents.COLOR.get(), Color.NULL);
         lightData.setColor(color.getHexColor());
@@ -114,19 +113,37 @@ public class Flashlight extends Item {
         lightData.setOcclusionEnabled(true);
         lightData.setInscatteringStrength(2.5f);
 
-        if (ACTIVE_LIGHTS.containsKey(player.getUUID())) {
-            ACTIVE_LIGHTS.get(player.getUUID()).free();
-            ACTIVE_LIGHTS.remove(player.getUUID());
+        LightRenderHandle<SpotLightData> lightRenderHandle = VeilRenderSystem.renderer().getLightRenderer().addLight(lightData);
+
+        if (!ACTIVE_LIGHTS.containsKey(pUUID)) {
+            ACTIVE_LIGHTS.put(pUUID, new HashMap<>());
+            ACTIVE_LIGHTS.get(pUUID).put(interactionHand, lightRenderHandle);
+            return;
         }
 
-        ACTIVE_LIGHTS.put(player.getUUID(), VeilRenderSystem.renderer().getLightRenderer().addLight(lightData));
+        if (ACTIVE_LIGHTS.get(pUUID).containsKey(interactionHand)) {
+            ACTIVE_LIGHTS.get(pUUID).get(interactionHand).free();
+            ACTIVE_LIGHTS.get(pUUID).remove(interactionHand);
+        }
+
+        ACTIVE_LIGHTS.get(pUUID).put(interactionHand, lightRenderHandle);
     }
 
-    public void turnOffLight(Player player) {
-        if (ACTIVE_LIGHTS.get(player.getUUID()) != null) {
-            ACTIVE_LIGHTS.get(player.getUUID()).free();
-            ACTIVE_LIGHTS.remove(player.getUUID());
+    public static void turnOffLight(UUID pUUID, InteractionHand interactionHand) {
+        if (ACTIVE_LIGHTS.get(pUUID) != null) {
+            if (ACTIVE_LIGHTS.get(pUUID).get(interactionHand) != null) {
+                ACTIVE_LIGHTS.get(pUUID).get(interactionHand).free();
+                ACTIVE_LIGHTS.get(pUUID).remove(interactionHand);
+                if (ACTIVE_LIGHTS.get(pUUID).isEmpty()) {
+                    ACTIVE_LIGHTS.remove(pUUID);
+                }
+            }
         }
+    }
+
+    public static void turnOffLights(UUID pUUID) {
+        turnOffLight(pUUID, InteractionHand.MAIN_HAND);
+        turnOffLight(pUUID, InteractionHand.OFF_HAND);
     }
 
     @Override
@@ -134,11 +151,14 @@ public class Flashlight extends Item {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
 
         if (entity instanceof Player player) {
-            boolean selected = isSelected || player.getOffhandItem().is(stack.getItem());
+            boolean heldInMain = player.getMainHandItem() == stack;
+            boolean heldInOff = player.getOffhandItem() == stack;
+            boolean selected = heldInMain || heldInOff;
+            InteractionHand interactionHand = heldInMain ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
 
             if (!selected && stack.getOrDefault(LibDataComponents.TOGGLE.get(), false)) {
                 if (level.isClientSide()) {
-                    turnOffLight(player);
+                    turnOffLight(player.getUUID(), interactionHand);
                 } else {
                     stack.set(LibDataComponents.TOGGLE.get(), false);
                     toggleOff(level, player);
@@ -147,19 +167,19 @@ public class Flashlight extends Item {
         }
     }
 
-    public void updateLight(Player player, float partialTicks, ItemStack stack, InteractionHand interactionHand) {
-        boolean toggleState = stack.getOrDefault(LibDataComponents.TOGGLE.get(), false);
-        if (!ACTIVE_LIGHTS.containsKey(player.getUUID())) {
+    public void updateLights(Player player, float partialTicks, ItemStack stack, boolean toggleState, InteractionHand interactionHand) {
+        UUID pUUID = player.getUUID();
+        if (!ACTIVE_LIGHTS.containsKey(pUUID) || !ACTIVE_LIGHTS.get(pUUID).containsKey(interactionHand)) {
             if (toggleState) {
-                addLightData(stack, player);
+                addLightData(stack, interactionHand, pUUID);
             }
         }
         if (!toggleState) {
-            turnOffLight(player);
+            turnOffLight(pUUID, interactionHand);
         }
 
-        if (toggleState){
-            SpotLightData lightData = ACTIVE_LIGHTS.get(player.getUUID()).getLightData();
+        if (toggleState && ACTIVE_LIGHTS.get(pUUID).get(interactionHand) != null) {
+            SpotLightData lightData = ACTIVE_LIGHTS.get(pUUID).get(interactionHand).getLightData();
 
             Vector3f playerRotation = Vec3Utils.toVector3f(player.getViewVector(partialTicks));
             Quaternionf orientation = new Quaternionf();
@@ -173,7 +193,7 @@ public class Flashlight extends Item {
             Vec3 localOffset = new Vec3(-0.4 * direction, -0.7, 0.8);
             float yRot = player.yBodyRot;
             if (isFirstPersonAndLocal) {
-                localOffset = new Vec3(-0.9 * direction, -0.6, 0.9);
+                localOffset = new Vec3(-1 * direction, -0.6, 0.9);
                 yRot = player.getViewYRot(partialTicks);
             }
 
@@ -198,19 +218,16 @@ public class Flashlight extends Item {
         for (Player player : players) {
             if (player == null) continue;
 
-            ItemStack stack = player.getMainHandItem();
-            InteractionHand interactionHand = InteractionHand.MAIN_HAND;
-            Item flashlight = LuminousFlashlights.MOD_ITEMS.getItem("flashlight").get();
-            if (!stack.is(flashlight)) {
-                stack = player.getOffhandItem();
-                interactionHand = InteractionHand.OFF_HAND;
-                if (!stack.is(flashlight)) {
-                    continue;
+            for (InteractionHand hand : InteractionHand.values()) {
+                ItemStack stack = player.getItemInHand(hand);
+                Item flashlight = LuminousFlashlights.MOD_ITEMS.getItem("flashlight").get();
+                if (level.isClientSide()) {
+                    if (stack.is(flashlight)) {
+                        ((Flashlight) stack.getItem()).updateLights(player, (float) event.getPartialTick(), stack, stack.getOrDefault(LibDataComponents.TOGGLE.get(), false), hand);
+                    } else {
+                        turnOffLight(player.getUUID(), hand);
+                    }
                 }
-            }
-
-            if (level.isClientSide()) {
-                ((Flashlight) stack.getItem()).updateLight(player, (float) event.getPartialTick(), stack, interactionHand);
             }
         }
     }
@@ -227,7 +244,7 @@ public class Flashlight extends Item {
             if (!level.isClientSide()) {
                 toggleOff(level, player);
             }
-            ((Flashlight) stack.getItem()).turnOffLight(player);
+            ((Flashlight) stack.getItem()).turnOffLights(player.getUUID());
         }
     }
 
@@ -236,9 +253,20 @@ public class Flashlight extends Item {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
         Color color = stack.getOrDefault(ModDataComponents.COLOR.get(), Color.GLASS);
+        java.awt.Color textColor = java.awt.Color.decode(String.valueOf(color.getHexColor()));
+        float multiplier = color.getChatBrightness() / 4.0f;
+
+        int r = Math.min(255, Math.max(0, (int) (textColor.getRed() * multiplier)));
+        int g = Math.min(255, Math.max(0, (int) (textColor.getGreen() * multiplier)));
+        int b = Math.min(255, Math.max(0, (int) (textColor.getBlue() * multiplier)));
+
+        int rgbCombined = ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
+        TextColor minecraftColor = TextColor.fromRgb(rgbCombined);
+
         tooltipComponents.add(
                 Component.translatable("item.luminous_flashlights.flashlight.tooltip.%s".formatted(color.getSerializedName()))
-                        .setStyle(Style.EMPTY.withColor(color.getHexColor())));
+                        .setStyle(Style.EMPTY.withColor(minecraftColor)
+                        ));
         tooltipComponents.add(Component.translatable("item.luminous_flashlights.flashlight.tooltip").setStyle(
                 Style.EMPTY.withColor(ChatFormatting.GRAY)
         ));
@@ -275,5 +303,18 @@ public class Flashlight extends Item {
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.NONE;
+    }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        ItemStack oldStackNoToggle = oldStack.copy();
+        oldStackNoToggle.remove(LibDataComponents.TOGGLE.get());
+        ItemStack newStackNoToggle = newStack.copy();
+        newStackNoToggle.remove(LibDataComponents.TOGGLE.get());
+
+        if (ItemStack.matches(oldStackNoToggle, newStackNoToggle) && !slotChanged) {
+            return false;
+        }
+        return true;
     }
 }

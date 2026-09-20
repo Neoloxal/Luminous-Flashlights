@@ -5,7 +5,7 @@
       "predicate": {
         "luminous_flashlights:enabled": 1.0
       },
-      "model": "luminous_flashlights:item/flashlight/flashlight_base_on"
+      "model": "luminous_flashlights:item/flashlight_base_on"
     },
     {
     "predicate": {

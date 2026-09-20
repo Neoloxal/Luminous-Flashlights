@@ -10,7 +10,7 @@ import net.minecraft.util.StringRepresentable;
 import java.util.function.IntFunction;
 
 public enum Color implements StringRepresentable {
-    GLASS("glass", 0f, 0xffffff, 0.5f),
+    GLASS("glass", 0f, 0xffffff, 0.5f, 3f),
     RED("red", 1f, 0xff0000, 4f),
     ORANGE("orange", 2f, 0xfca103, 4f),
     YELLOW("yellow", 3f, 0xfce703, 4f),
@@ -23,24 +23,30 @@ public enum Color implements StringRepresentable {
     MAGENTA("magenta", 10f, 0xe600ff, 4f),
     PINK("pink", 11f, 0xff0077, 4f),
     WHITE("white", 12f, 0xffedba, 4f),
-    LIGHT_GRAY("light_gray", 13f, 0xffffff, 2f),
-    GRAY("gray", 14f, 0xffffff, 1f),
-    BLACK("black", 15f, 0x474747, 0f),
+    LIGHT_GRAY("light_gray", 13f, 0xffedba, 2f),
+    GRAY("gray", 14f, 0xffedba, 1f),
+    BLACK("black", 15f, 0x474747, 0f, 4f),
     BROWN("brown", 16f, 0x542700, 5f),
     NULL("null", -1f, 0xdf03fc, 10f);
 
     final int hex_color;
     final float brightness;
+    final float chatBrightness;
 
     final float identifier;
     final String name;
 
-    Color(String name, float identifier, int hexColor, float brightness) {
+    Color(String name, float identifier, int hexColor, float brightness, float chatBrightness) {
         this.name = name;
         this.identifier = identifier;
 
         this.hex_color = hexColor;
         this.brightness = brightness;
+        this.chatBrightness = chatBrightness;
+    }
+
+    Color(String name, float identifier, int hexColor, float brightness) {
+        this(name, identifier, hexColor, brightness, brightness);
     }
 
     public int getHexColor() {
@@ -49,6 +55,10 @@ public enum Color implements StringRepresentable {
 
     public float getBrightness() {
         return brightness;
+    }
+
+    public float getChatBrightness() {
+        return chatBrightness;
     }
 
     public float getIdentifier() {
