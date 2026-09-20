@@ -1,5 +1,5 @@
 {
-  "parent": "luminous_flashlights:item/flashlight_base",
+  "parent": "luminous_flashlights:item/flashlight_base_on",
   "textures": {
     "lens": "luminous_flashlights:item/brown_lens_on"
   }

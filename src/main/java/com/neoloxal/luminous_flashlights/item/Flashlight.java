@@ -22,10 +22,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -94,7 +91,7 @@ public class Flashlight extends Item {
             }
         }
 
-        return InteractionResultHolder.success(stack);
+        return InteractionResultHolder.consume(stack);
     }
 
     public static void toggleOn(Level level, Player player) {
@@ -102,7 +99,7 @@ public class Flashlight extends Item {
         level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.FLASHLIGHT_ON.get(), SoundSource.PLAYERS);
     }
 
-    public void toggleOff(Level level, Player player) {
+    public static void toggleOff(Level level, Player player) {
         LOGGER.debug("toggle off");
         level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.FLASHLIGHT_OFF.get(), SoundSource.PLAYERS);
     }
@@ -144,6 +141,7 @@ public class Flashlight extends Item {
                     turnOffLight(player);
                 } else {
                     stack.set(LibDataComponents.TOGGLE.get(), false);
+                    toggleOff(level, player);
                 }
             }
         }
@@ -222,9 +220,13 @@ public class Flashlight extends Item {
         ItemEntity entity = event.getEntity();
         ItemStack stack = entity.getItem();
         Player player = event.getPlayer();
+        Level level = player.level();
 
         if (stack.is(LuminousFlashlights.MOD_ITEMS.getItem("flashlight"))) {
             stack.set(LibDataComponents.TOGGLE.get(), false);
+            if (!level.isClientSide()) {
+                toggleOff(level, player);
+            }
             ((Flashlight) stack.getItem()).turnOffLight(player);
         }
     }
@@ -268,5 +270,10 @@ public class Flashlight extends Item {
                 }
             }
         }
+    }
+
+    @Override
+    public UseAnim getUseAnimation(ItemStack stack) {
+        return UseAnim.NONE;
     }
 }

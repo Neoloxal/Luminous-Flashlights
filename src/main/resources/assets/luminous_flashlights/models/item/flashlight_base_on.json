@@ -1,17 +1,13 @@
 {
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
-	"textures": {
-		"particle": "luminous_flashlights:item/flashlight_base",
-		"body": "luminous_flashlights:item/flashlight_base",
-		"lens": "luminous_flashlights:item/placeholder_lens"
-	},
+	"parent": "luminous_flashlights:item/flashlight_base",
 	"elements": [
 		{
 			"name": "Button",
-			"from": [7, 8, 6],
-			"to": [9, 9, 8],
-			"rotation": {"angle": 0, "axis": "y", "origin": [7, 8, 6]},
+			"from": [7, 7.5, 6],
+			"to": [9, 8.5, 8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 7.5, 6]},
 			"faces": {
 				"north": {"uv": [16, 6, 14, 7], "texture": "#body"},
 				"east": {"uv": [14, 6, 12, 7], "texture": "#body"},
@@ -63,38 +59,5 @@
 				"down": {"uv": [0, 4, 4, 12], "rotation": 180, "texture": "#body"}
 			}
 		}
-	],
-	"display": {
-		"thirdperson_righthand": {
-			"rotation": [90, 0, 0],
-			"translation": [0, 1, 3],
-			"scale": [0.5, 0.5, 0.5]
-		},
-		"thirdperson_lefthand": {
-			"rotation": [90, 0, 0],
-			"translation": [0, 1, 3],
-			"scale": [0.5, 0.5, 0.5]
-		},
-		"firstperson_righthand": {
-			"translation": [4, 1.5, 0]
-		},
-		"firstperson_lefthand": {
-			"translation": [4, 1.5, 0]
-		},
-		"ground": {
-			"translation": [0, 2, 0],
-			"scale": [0.5, 0.5, 0.5]
-		},
-		"gui": {
-			"rotation": [135, -45, 135],
-			"translation": [-1, 1, 0]
-		},
-		"head": {
-			"rotation": [0, -180, 0],
-			"translation": [0, 0, -12.25]
-		},
-		"fixed": {
-			"rotation": [0, 90, 0]
-		}
-	}
+	]
 }
