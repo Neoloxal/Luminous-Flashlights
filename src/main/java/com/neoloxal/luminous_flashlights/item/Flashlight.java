@@ -398,8 +398,10 @@ public class Flashlight extends Item {
     public static void clientTick(ClientTickEvent.Post event) {
         FocusOverlay.clientTick();
         if (Minecraft.getInstance().player != null) {
-            if (LuminousFlashlights.Keybinds.FLASHLIGHT_FOCUS.isDown()) {
-                FocusOverlay.showOverlay(10, false);
+            if (Minecraft.getInstance().player.getMainHandItem().is(LuminousFlashlights.MOD_ITEMS.getItem("flashlight"))) {
+                if (LuminousFlashlights.Keybinds.FLASHLIGHT_FOCUS.isDown()) {
+                    FocusOverlay.showOverlay(10, false);
+                }
             }
         }
     }
