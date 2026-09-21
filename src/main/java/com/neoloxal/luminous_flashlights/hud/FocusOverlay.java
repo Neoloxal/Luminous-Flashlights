@@ -153,7 +153,7 @@ public class FocusOverlay implements LayeredDraw.Layer {
     }
 
     private static LineType getLineTypeForFocus(double focus) {
-        if (Math.abs(focus) > 25) {
+        if (focus > ModDataComponents.maxFocus || focus < ModDataComponents.minFocus) {
             return LineType.NONE;
         }
         if (focus == 0) {

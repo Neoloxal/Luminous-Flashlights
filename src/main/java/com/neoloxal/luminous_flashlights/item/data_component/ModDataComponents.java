@@ -18,7 +18,8 @@ public class ModDataComponents {
             builder -> builder.persistent(Color.CODEC).networkSynchronized(Color.STREAM_CODEC)
     );
 
-    public static Double maxFocus = 25.0;
+    public static Double maxFocus = 24.0;
+    public static Double minFocus = -12.0;
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Double>> FOCUS = DATA_COMPONENTS.registerComponentType(
             "focus",
@@ -33,7 +34,7 @@ public class ModDataComponents {
         public static double scrollStack(ItemStack stack, double scrollDelta) {
             double oldValue = stack.getOrDefault(FOCUS.get(), 0.0);
             double newValue = oldValue + scrollDelta;
-            double fixedValue = Math.max(-maxFocus, Math.min(maxFocus, newValue));
+            double fixedValue = Math.max(minFocus, Math.min(maxFocus, newValue));
             stack.set(
                     FOCUS.get(),
                     fixedValue

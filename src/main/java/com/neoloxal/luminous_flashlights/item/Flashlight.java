@@ -23,6 +23,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -200,6 +201,7 @@ public class Flashlight extends Item {
             boolean isFirstPersonAndLocal = player == Minecraft.getInstance().player && Minecraft.getInstance().options.getCameraType().isFirstPerson();
 
             int direction = interactionHand.equals(InteractionHand.MAIN_HAND) ? 1 : -1;
+            direction *= player.getMainArm() == HumanoidArm.RIGHT ? 1 : -1;
             Vec3 localOffset = new Vec3(-0.4 * direction, -0.7, 0.8);
             float yRot = player.yBodyRot;
             if (isFirstPersonAndLocal) {
@@ -214,8 +216,25 @@ public class Flashlight extends Item {
             double focus = stack.getOrDefault(ModDataComponents.FOCUS.get(), 0.0);
             float baseBrightness = stack.getOrDefault(ModDataComponents.COLOR.get(), Color.GLASS).getBrightness();
             lightData.setDistance((float) (DEFAULT_DISTANCE + Math.floor(focus) / 1.25f));
-            lightData.setSize(Math.max(0.1f, (float) (DEFAULT_SIZE - (Math.floor(focus) / 125))));
-            lightData.setBrightness((float) (baseBrightness + (focus / 12.5f)));
+
+            float sizeAtMin = 1f;
+            float sizeAtMax = 0.5f;
+            double sizeMarker = (focus - ModDataComponents.minFocus)
+                    / (ModDataComponents.maxFocus - ModDataComponents.minFocus);
+            sizeMarker = Math.max(0.0, Math.min(1.0, sizeMarker));
+
+            lightData.setSize((float) (sizeAtMin + (sizeAtMax - sizeAtMin) * sizeMarker));
+
+            float brightnessAtMin = -3f;
+            float brightnessAtMax = 2f;
+            double brightnessMarker = (focus - ModDataComponents.minFocus)
+                    / (ModDataComponents.maxFocus - ModDataComponents.minFocus);
+            brightnessMarker = Math.max(0.0, Math.min(1.0, brightnessMarker));
+
+            lightData.setBrightness((float) Math.max(0.25f, (baseBrightness + (brightnessAtMin + (brightnessAtMax - brightnessAtMin) * brightnessMarker*brightnessMarker))));
+            if (stack.getOrDefault(ModDataComponents.COLOR.get(), Color.GLASS) == Color.BLACK) {
+                lightData.setBrightness(-lightData.getBrightness());
+            }
         }
     }
 
@@ -354,7 +373,7 @@ public class Flashlight extends Item {
                     player.getMainHandItem().is(LuminousFlashlights.MOD_ITEMS.getItem("flashlight"))) {
                 ClientPacketListener connection = Minecraft.getInstance().getConnection();
                 if (connection != null) {
-                    connection.send(new ScrollPayload(event.getScrollDeltaY()/4));
+                    connection.send(new ScrollPayload(event.getScrollDeltaY()/0.5));
                 }
                 event.setCanceled(true);
             }
