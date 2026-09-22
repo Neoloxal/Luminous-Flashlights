@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import com.neoloxal.luminous_flashlights.datagen.ModBlockTagsProvider;
 import com.neoloxal.luminous_flashlights.datagen.ModItemTagsProvider;
+import com.neoloxal.luminous_flashlights.datagen.ModLangProvider;
 import com.neoloxal.luminous_flashlights.datagen.ModRecipeProvider;
 import com.neoloxal.luminous_flashlights.item.Flashlight;
 import com.neoloxal.luminous_flashlights.item.data_component.Color;
@@ -12,8 +13,7 @@ import com.neoloxal.luminous_flashlights.item.ModItems;
 import com.neoloxal.luminous_flashlights.packet.ScrollPayload;
 import com.neoloxal.luminous_flashlights.sounds.ModSounds;
 import com.neoloxal.paint_palette_lib.Palette;
-import com.neoloxal.paint_palette_lib.datagen.LibDataGenerators;
-import cpw.mods.util.Lazy;
+import com.neoloxal.paint_palette_lib.PaletteUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
@@ -29,11 +29,8 @@ import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import org.apache.commons.lang3.text.WordUtils;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
-
-import java.util.Arrays;
 
 @Mod(LuminousFlashlights.MODID)
 public class LuminousFlashlights {
@@ -54,26 +51,10 @@ public class LuminousFlashlights {
         modEventBus.register(this);
         modEventBus.register(LuminousFlashlightsClient.class);
 
-        LibDataGenerators.LibLangProvider.EXTERNAL_TRANSLATORS.add((modId, translationRegistry) -> {
-            Arrays.stream(Color.values()).iterator().forEachRemaining(
-                color -> translationRegistry.accept(
-                        "item.luminous_flashlights.flashlight.tooltip.%s".formatted(color.getSerializedName()),
-                        WordUtils.capitalizeFully(color.getSerializedName().replace('_', ' '))
-                )
-            );
-            translationRegistry.accept("item.luminous_flashlights.flashlight.tooltip", "Swap hands while holding a flashlight in your offhand and a lens in your main hand.");
-        });
-        LibDataGenerators.LibLangProvider.EXTERNAL_TRANSLATORS.add((modId, translationRegistry) -> {
-            translationRegistry.accept("sounds.luminous_flashlights.flashlight_on", "Flashlight turns on");
-            translationRegistry.accept("sounds.luminous_flashlights.flashlight_off", "Flashlight turns off");
-            translationRegistry.accept("sounds.luminous_flashlights.swap_lens", "Lens is swapped");
-            translationRegistry.accept("sounds.luminous_flashlights.focus_change", "Focus changes");
+        PaletteUtils.Canvas.useOtherLanguageProvider(MODID, ModLangProvider::new);
 
-            translationRegistry.accept("key.luminous_flashlights.flashlight_focus", "Change flashlight focus");
-        });
-
-        Palette.Canvas.createTagsGenerator(MODID, ModBlockTagsProvider::new, ModItemTagsProvider::new);
-        Palette.Canvas.createRecipeGenerator(MODID, ModRecipeProvider::new);
+        PaletteUtils.Canvas.createTagsGenerator(MODID, ModBlockTagsProvider::new, ModItemTagsProvider::new);
+        PaletteUtils.Canvas.createRecipeGenerator(MODID, ModRecipeProvider::new);
     }
 
     @SubscribeEvent

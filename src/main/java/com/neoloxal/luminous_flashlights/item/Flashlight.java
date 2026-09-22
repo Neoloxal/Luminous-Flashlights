@@ -7,7 +7,7 @@ import com.neoloxal.luminous_flashlights.item.data_component.Color;
 import com.neoloxal.luminous_flashlights.item.data_component.ModDataComponents;
 import com.neoloxal.luminous_flashlights.packet.ScrollPayload;
 import com.neoloxal.luminous_flashlights.sounds.ModSounds;
-import com.neoloxal.paint_palette_lib.builtin.LibDataComponents;
+import com.neoloxal.paint_palette_lib.builtin.PaletteDataComponents;
 import com.neoloxal.paint_palette_lib.utils.Vec3Utils;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.light.data.SpotLightData;
@@ -85,16 +85,16 @@ public class Flashlight extends Item {
     @Override
     public void verifyComponentsAfterLoad(ItemStack stack) {
         super.verifyComponentsAfterLoad(stack);
-        //stack.set(LibDataComponents.TOGGLE.get(), false);
+        //stack.set(PaletteDataComponents.TOGGLE.get(), false);
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);
         if (!level.isClientSide()) {
-            boolean currentState = stack.getOrDefault(LibDataComponents.TOGGLE.get(), false);
+            boolean currentState = stack.getOrDefault(PaletteDataComponents.TOGGLE.get(), false);
             boolean newState = !currentState;
-            stack.set(LibDataComponents.TOGGLE.get(), newState);
+            stack.set(PaletteDataComponents.TOGGLE.get(), newState);
 
             if (newState) {
                 toggleOn(level, player);
@@ -167,11 +167,11 @@ public class Flashlight extends Item {
             boolean selected = heldInMain || heldInOff;
             InteractionHand interactionHand = heldInMain ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
 
-            if (!selected && stack.getOrDefault(LibDataComponents.TOGGLE.get(), false)) {
+            if (!selected && stack.getOrDefault(PaletteDataComponents.TOGGLE.get(), false)) {
                 if (level.isClientSide()) {
                     turnOffLight(player.getUUID(), interactionHand);
                 } else {
-                    stack.set(LibDataComponents.TOGGLE.get(), false);
+                    stack.set(PaletteDataComponents.TOGGLE.get(), false);
                     toggleOff(level, player);
                 }
             }
@@ -261,7 +261,7 @@ public class Flashlight extends Item {
                 Item flashlight = LuminousFlashlights.MOD_ITEMS.getItem("flashlight").get();
                 if (level.isClientSide()) {
                     if (stack.is(flashlight)) {
-                        ((Flashlight) stack.getItem()).updateLights(player, (float) event.getPartialTick(), stack, stack.getOrDefault(LibDataComponents.TOGGLE.get(), false), hand);
+                        ((Flashlight) stack.getItem()).updateLights(player, (float) event.getPartialTick(), stack, stack.getOrDefault(PaletteDataComponents.TOGGLE.get(), false), hand);
                     } else {
                         turnOffLight(player.getUUID(), hand);
                     }
@@ -282,7 +282,7 @@ public class Flashlight extends Item {
         Level level = player.level();
 
         if (stack.is(LuminousFlashlights.MOD_ITEMS.getItem("flashlight"))) {
-            stack.set(LibDataComponents.TOGGLE.get(), false);
+            stack.set(PaletteDataComponents.TOGGLE.get(), false);
             if (!level.isClientSide()) {
                 toggleOff(level, player);
             }
@@ -328,7 +328,7 @@ public class Flashlight extends Item {
 
                     ItemStack flashlight = offStack.copy();
                     flashlight.applyComponents(offStack.getComponents());
-                    flashlight.set(LibDataComponents.TOGGLE.get(), false);
+                    flashlight.set(PaletteDataComponents.TOGGLE.get(), false);
                     flashlight.set(ModDataComponents.COLOR.get(), newColor);
                     event.setItemSwappedToOffHand(flashlight);
 
@@ -350,10 +350,10 @@ public class Flashlight extends Item {
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         ItemStack oldStackNoToggleNoFocus = oldStack.copy();
-        oldStackNoToggleNoFocus.remove(LibDataComponents.TOGGLE.get());
+        oldStackNoToggleNoFocus.remove(PaletteDataComponents.TOGGLE.get());
         oldStackNoToggleNoFocus.remove(ModDataComponents.FOCUS.get());
         ItemStack newStackNoToggleNoFocus = newStack.copy();
-        newStackNoToggleNoFocus.remove(LibDataComponents.TOGGLE.get());
+        newStackNoToggleNoFocus.remove(PaletteDataComponents.TOGGLE.get());
         newStackNoToggleNoFocus.remove(ModDataComponents.FOCUS.get());
 
         if (ItemStack.matches(oldStackNoToggleNoFocus, newStackNoToggleNoFocus) && !slotChanged) {

@@ -4,7 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.neoloxal.luminous_flashlights.LuminousFlashlights;
 import com.neoloxal.luminous_flashlights.item.data_component.Color;
 import com.neoloxal.luminous_flashlights.item.data_component.ModDataComponents;
-import com.neoloxal.paint_palette_lib.builtin.LibDataComponents;
+import com.neoloxal.paint_palette_lib.builtin.PaletteDataComponents;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -20,7 +20,7 @@ public class ModItemProperties {
                 flashlight,
                 ResourceLocation.fromNamespaceAndPath(LuminousFlashlights.MODID, "enabled"),
                 (stack, level, entity, seed) ->
-                        stack.getOrDefault(LibDataComponents.TOGGLE.get(), false) ? 1f : 0f
+                        stack.getOrDefault(PaletteDataComponents.TOGGLE.get(), false) ? 1f : 0f
         );
 
         ItemProperties.register(
