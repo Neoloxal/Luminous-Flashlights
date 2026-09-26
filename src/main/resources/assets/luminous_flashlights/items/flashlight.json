@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "luminous_flashlights:item/flashlight"
+  }
+}

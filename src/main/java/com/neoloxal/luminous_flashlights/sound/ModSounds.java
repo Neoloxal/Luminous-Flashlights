@@ -1,4 +1,4 @@
-package com.neoloxal.luminous_flashlights.sounds;
+package com.neoloxal.luminous_flashlights.sound;
 
 import com.neoloxal.luminous_flashlights.LuminousFlashlights;
 import net.minecraft.core.registries.BuiltInRegistries;

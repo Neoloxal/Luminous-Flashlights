@@ -2,15 +2,21 @@ package com.neoloxal.luminous_flashlights;
 
 import com.neoloxal.luminous_flashlights.hud.FocusOverlay;
 import com.neoloxal.luminous_flashlights.item.ModItemProperties;
+import com.neoloxal.luminous_flashlights.render.FlashlightItemExtensions;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+
+import java.util.function.Consumer;
 
 @EventBusSubscriber(modid = LuminousFlashlights.MODID, value = Dist.CLIENT)
 public class LuminousFlashlightsClient {
@@ -26,5 +32,23 @@ public class LuminousFlashlightsClient {
                 ResourceLocation.fromNamespaceAndPath(LuminousFlashlights.MODID, "flashlight_focus"),
                 new FocusOverlay()
         );
+    }
+
+    @SubscribeEvent
+    public static void registerItemExtensions(RegisterClientExtensionsEvent event) {
+        event.registerItem(new FlashlightItemExtensions(), LuminousFlashlights.MOD_ITEMS.getItem("flashlight"));
+    }
+
+    @SubscribeEvent
+    public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
+        event.register(ModelResourceLocation.standalone(
+                ResourceLocation.fromNamespaceAndPath(LuminousFlashlights.MODID, "item/flashlight_overrides")
+        ));
+        event.register(ModelResourceLocation.standalone(
+                ResourceLocation.fromNamespaceAndPath(LuminousFlashlights.MODID, "item/flashlight_base")
+        ));
+        event.register(ModelResourceLocation.standalone(
+                ResourceLocation.fromNamespaceAndPath(LuminousFlashlights.MODID, "item/flashlight")
+        ));
     }
 }

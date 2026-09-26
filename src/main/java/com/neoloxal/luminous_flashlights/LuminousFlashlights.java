@@ -11,7 +11,7 @@ import com.neoloxal.luminous_flashlights.item.data_component.Color;
 import com.neoloxal.luminous_flashlights.item.data_component.ModDataComponents;
 import com.neoloxal.luminous_flashlights.item.ModItems;
 import com.neoloxal.luminous_flashlights.packet.ScrollPayload;
-import com.neoloxal.luminous_flashlights.sounds.ModSounds;
+import com.neoloxal.luminous_flashlights.sound.ModSounds;
 import com.neoloxal.paint_palette_lib.Palette;
 import com.neoloxal.paint_palette_lib.PaletteUtils;
 import net.minecraft.client.KeyMapping;

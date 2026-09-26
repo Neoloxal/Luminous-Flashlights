@@ -6,7 +6,8 @@ import com.neoloxal.luminous_flashlights.hud.FocusOverlay;
 import com.neoloxal.luminous_flashlights.item.data_component.Color;
 import com.neoloxal.luminous_flashlights.item.data_component.ModDataComponents;
 import com.neoloxal.luminous_flashlights.packet.ScrollPayload;
-import com.neoloxal.luminous_flashlights.sounds.ModSounds;
+import com.neoloxal.luminous_flashlights.render.FlashlightItemRenderer;
+import com.neoloxal.luminous_flashlights.sound.ModSounds;
 import com.neoloxal.paint_palette_lib.builtin.PaletteDataComponents;
 import com.neoloxal.paint_palette_lib.utils.Vec3Utils;
 import foundry.veil.api.client.render.VeilRenderSystem;
@@ -33,9 +34,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.LivingSwapItemsEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -49,13 +49,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @EventBusSubscriber
-public class Flashlight extends Item {
+public class Flashlight extends Item implements IClientItemExtensions {
     public Flashlight(Properties properties) {
         super(properties);
     }
 
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final Map<UUID, Map<InteractionHand, LightRenderHandle<SpotLightData>>> ACTIVE_LIGHTS = new HashMap<>();
+    public static final Map<UUID, Map<InteractionHand, LightRenderHandle<SpotLightData>>> ACTIVE_LIGHTS = new HashMap<>();
 
     private static final float DEFAULT_DISTANCE = 35;
     private static final float DEFAULT_SIZE = 0.5f;
@@ -175,6 +175,10 @@ public class Flashlight extends Item {
                     toggleOff(level, player);
                 }
             }
+
+            if (!level.isClientSide()) {
+                stack.set(ModDataComponents.HOLDER.get(), player.getUUID());
+            }
         }
     }
 
@@ -199,20 +203,26 @@ public class Flashlight extends Item {
             lightData.getOrientationMutable().set(orientation);
 
             boolean isFirstPersonAndLocal = player == Minecraft.getInstance().player && Minecraft.getInstance().options.getCameraType().isFirstPerson();
+            float yRot = player.yBodyRot;
+            float xRot = player.getViewXRot(partialTicks);
 
             int direction = interactionHand.equals(InteractionHand.MAIN_HAND) ? 1 : -1;
             direction *= player.getMainArm() == HumanoidArm.RIGHT ? 1 : -1;
-            Vec3 localOffset = new Vec3(-0.4 * direction, -0.7, 0.8);
-            float yRot = player.yBodyRot;
+            Vec3 localOffset;
             if (isFirstPersonAndLocal) {
                 localOffset = new Vec3(-1 * direction, -0.7, 0.9);
                 yRot = player.getViewYRot(partialTicks);
+            } else {
+                if (xRot > 0) {
+                    localOffset = new Vec3(-0.3 * direction, 0.35, 0.5);
+                } else {
+                    localOffset = new Vec3(-0.35 * direction, -0.7, 0.5);
+                }
             }
 
-            Vec3 worldOffset = localOffset.xRot((float) Math.toRadians(-player.getViewXRot(partialTicks))).yRot((float) Math.toRadians(-yRot));
+            Vec3 worldOffset = localOffset.xRot((float) Math.toRadians(-xRot)).yRot((float) Math.toRadians(-yRot));
             Vec3 position = player.getEyePosition(partialTicks).add(worldOffset);
             lightData.getPositionMutable().set(Vec3Utils.toVector3d(position));
-
             double focus = stack.getOrDefault(ModDataComponents.FOCUS.get(), 0.0);
             float baseBrightness = stack.getOrDefault(ModDataComponents.COLOR.get(), Color.GLASS).getBrightness();
             lightData.setDistance((float) (DEFAULT_DISTANCE + Math.floor(focus) / 1.25f));

@@ -1,0 +1,13 @@
+{
+  "entries": [
+    {
+      "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
+      "name": "LUMINOUS_FLASHLIGHTS_FLASHLIGHT",
+      "constructor": "(ZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+      "parameters": {
+        "class": "com/neoloxal/luminous_flashlights/render/FlashlightArmPoseParams",
+        "field": "FLASHLIGHT_ARM_POSE_PROXY"
+      }
+    }
+  ]
+}
