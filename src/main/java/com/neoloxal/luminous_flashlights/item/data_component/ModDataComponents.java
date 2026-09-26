@@ -6,7 +6,6 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -24,6 +23,18 @@ public class ModDataComponents {
 
     public static Double maxFocus = 24.0;
     public static Double minFocus = -12.0;
+    public enum ScrollSpeed {
+        FAST(2),
+        NORMAL(1),
+        SLOW(0.5),
+        VERY_SLOW(0.25);
+
+        public final double speed;
+
+        ScrollSpeed(double speed) {
+            this.speed = speed;
+        }
+    }
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Double>> FOCUS = DATA_COMPONENTS.registerComponentType(
             "focus",

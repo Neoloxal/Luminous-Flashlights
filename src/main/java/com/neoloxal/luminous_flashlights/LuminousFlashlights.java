@@ -2,6 +2,7 @@ package com.neoloxal.luminous_flashlights;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
+import com.neoloxal.luminous_flashlights.config.LuminousClient;
 import com.neoloxal.luminous_flashlights.datagen.ModBlockTagsProvider;
 import com.neoloxal.luminous_flashlights.datagen.ModItemTagsProvider;
 import com.neoloxal.luminous_flashlights.datagen.ModLangProvider;
@@ -24,6 +25,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -55,6 +57,8 @@ public class LuminousFlashlights {
 
         PaletteUtils.Canvas.createTagsGenerator(MODID, ModBlockTagsProvider::new, ModItemTagsProvider::new);
         PaletteUtils.Canvas.createRecipeGenerator(MODID, ModRecipeProvider::new);
+
+        modContainer.registerConfig(ModConfig.Type.CLIENT, LuminousClient.CONFIG_SPEC);
     }
 
     @SubscribeEvent

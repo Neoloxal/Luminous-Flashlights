@@ -33,5 +33,11 @@ public class ModLangProvider extends LanguageProvider implements DatagenUtils.Ca
         add("sounds.luminous_flashlights.focus_change", "Focus changes");
 
         add("key.luminous_flashlights.flashlight_focus", "Change flashlight focus");
+
+        add("config.luminous_flashlights.focus_scroll_speed", "Focus Scroll Speed");
+        add("config.luminous_flashlights.focus_scroll_speed.comment", "The speed to adjust focus.");
+
+        add("config.luminous_flashlights.brightness_offset", "Brightness Offset");
+        add("config.luminous_flashlights.brightness_offset.comment", "The amount to adjust brightness.");
     }
 }

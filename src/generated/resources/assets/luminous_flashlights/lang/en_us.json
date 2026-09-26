@@ -1,4 +1,8 @@
 {
+  "config.luminous_flashlights.brightness_offset": "Brightness Offset",
+  "config.luminous_flashlights.brightness_offset.comment": "The amount to adjust brightness.",
+  "config.luminous_flashlights.focus_scroll_speed": "Focus Scroll Speed",
+  "config.luminous_flashlights.focus_scroll_speed.comment": "The speed to adjust focus.",
   "item.luminous_flashlights.flashlight": "Flashlight",
   "item.luminous_flashlights.flashlight.tooltip": "Swap hands while holding a flashlight in your offhand and a lens in your main hand.",
   "item.luminous_flashlights.flashlight.tooltip.black": "Black",

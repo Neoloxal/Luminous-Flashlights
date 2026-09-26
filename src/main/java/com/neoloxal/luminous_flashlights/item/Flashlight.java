@@ -2,6 +2,7 @@ package com.neoloxal.luminous_flashlights.item;
 
 import com.mojang.logging.LogUtils;
 import com.neoloxal.luminous_flashlights.LuminousFlashlights;
+import com.neoloxal.luminous_flashlights.config.LuminousClient;
 import com.neoloxal.luminous_flashlights.hud.FocusOverlay;
 import com.neoloxal.luminous_flashlights.item.data_component.Color;
 import com.neoloxal.luminous_flashlights.item.data_component.ModDataComponents;
@@ -225,7 +226,7 @@ public class Flashlight extends Item implements IClientItemExtensions {
             Vec3 position = player.getEyePosition(partialTicks).add(worldOffset);
             lightData.getPositionMutable().set(Vec3Utils.toVector3d(position));
             double focus = stack.getOrDefault(ModDataComponents.FOCUS.get(), 0.0);
-            float baseBrightness = stack.getOrDefault(ModDataComponents.COLOR.get(), Color.GLASS).getBrightness();
+            float baseBrightness = (float) (stack.getOrDefault(ModDataComponents.COLOR.get(), Color.GLASS).getBrightness() + LuminousClient.CONFIG.BRIGHTNESS_OFFSET.get());
             lightData.setDistance((float) (DEFAULT_DISTANCE + Math.floor(focus) / 1.25f));
 
             float sizeAtMin = 1f;
@@ -394,7 +395,7 @@ public class Flashlight extends Item implements IClientItemExtensions {
                     player.getMainHandItem().is(LuminousFlashlights.MOD_ITEMS.getItem("flashlight"))) {
                 ClientPacketListener connection = Minecraft.getInstance().getConnection();
                 if (connection != null) {
-                    connection.send(new ScrollPayload(event.getScrollDeltaY()/0.5));
+                    connection.send(new ScrollPayload(event.getScrollDeltaY() * LuminousClient.CONFIG.FOCUS_SCROLL_SPEED.get().speed));
                 }
                 event.setCanceled(true);
             }
