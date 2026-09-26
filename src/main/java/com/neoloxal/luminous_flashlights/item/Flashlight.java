@@ -38,6 +38,7 @@ import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.LivingSwapItemsEvent;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -330,11 +331,21 @@ public class Flashlight extends Item implements IClientItemExtensions {
             ItemStack offStack = event.getItemSwappedToMainHand();
             if (offStack.is(LuminousFlashlights.MOD_ITEMS.getItem("flashlight"))) {
                 ItemStack mainStack = event.getItemSwappedToOffHand();
-                if (mainStack.is(FlashlightItemTags.GLASS_PANES) && mainStack.getCount() == 1) {
+                if (mainStack.is(FlashlightItemTags.GLASS_PANES)) {
                     Color oldColor = offStack.getOrDefault(ModDataComponents.COLOR.get(), Color.GLASS);
                     Color newColor = PANE_MAP.get(mainStack.getItem());
 
-                    event.setItemSwappedToMainHand(new ItemStack(COLOR_MAP.get(oldColor), 1));
+                    ItemStack newMainStack = mainStack.copy();
+                    ItemStack paneStack = new ItemStack(COLOR_MAP.get(oldColor), 1);
+                    if (!paneStack.is(COLOR_MAP.get(newColor))) {
+                        if (mainStack.getCount() == 1) {
+                            newMainStack = paneStack;
+                        } else {
+                            newMainStack.shrink(1);
+                            ItemHandlerHelper.giveItemToPlayer(player, paneStack);
+                        }
+                    }
+                    event.setItemSwappedToMainHand(newMainStack);
 
                     ItemStack flashlight = offStack.copy();
                     flashlight.applyComponents(offStack.getComponents());
