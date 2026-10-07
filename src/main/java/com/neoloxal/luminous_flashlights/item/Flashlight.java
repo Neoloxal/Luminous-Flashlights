@@ -270,7 +270,7 @@ public class Flashlight extends Item implements IClientItemExtensions {
 
             for (InteractionHand hand : InteractionHand.values()) {
                 ItemStack stack = player.getItemInHand(hand);
-                Item flashlight = LuminousFlashlights.MOD_ITEMS.getItem("flashlight").get();
+                Item flashlight = LuminousFlashlights.MOD_ITEMS.getItem("flashlight");
                 if (level.isClientSide()) {
                     if (stack.is(flashlight)) {
                         ((Flashlight) stack.getItem()).updateLights(player, (float) event.getPartialTick(), stack, stack.getOrDefault(PaletteDataComponents.TOGGLE.get(), false), hand);

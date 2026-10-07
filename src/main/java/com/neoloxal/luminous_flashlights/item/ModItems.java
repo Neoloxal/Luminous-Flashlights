@@ -19,6 +19,6 @@ public class ModItems extends ItemRegistrar {
                 .stacksTo(1)
                 .component(ModDataComponents.COLOR.get(), Color.GLASS)
         ));
-        PaletteUtils.Canvas.generateName(getItem("flashlight"));
+        PaletteUtils.Canvas.generateName(getItemDeferred("flashlight"));
     }
 }

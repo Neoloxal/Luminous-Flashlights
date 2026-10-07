@@ -78,7 +78,7 @@ public class FocusOverlay implements LayeredDraw.Layer {
 
         if (minecraft.options.hideGui || player == null || ticksLeft <= 0) return;
 
-        Item flashlight = LuminousFlashlights.MOD_ITEMS.getItem("flashlight").get();
+        Item flashlight = LuminousFlashlights.MOD_ITEMS.getItem("flashlight");
         ItemStack stack = null;
         for (InteractionHand interactionHand : InteractionHand.values()) {
             ItemStack pStack = player.getItemInHand(interactionHand);

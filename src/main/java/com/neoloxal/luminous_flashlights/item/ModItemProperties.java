@@ -14,7 +14,7 @@ public class ModItemProperties {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public static void register() {
-        Item flashlight = LuminousFlashlights.MOD_ITEMS.getItem("flashlight").get();
+        Item flashlight = LuminousFlashlights.MOD_ITEMS.getItem("flashlight");
 
         ItemProperties.register(
                 flashlight,

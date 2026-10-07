@@ -14,6 +14,7 @@ import com.neoloxal.luminous_flashlights.item.ModItems;
 import com.neoloxal.luminous_flashlights.packet.ScrollPayload;
 import com.neoloxal.luminous_flashlights.sound.ModSounds;
 import com.neoloxal.paint_palette_lib.Palette;
+import com.neoloxal.paint_palette_lib.PaletteMod;
 import com.neoloxal.paint_palette_lib.PaletteUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -43,7 +44,7 @@ public class LuminousFlashlights {
 
     public LuminousFlashlights(IEventBus modEventBus, ModContainer modContainer) {
         Palette.enableDemoContent = false;
-        Palette.registerMod(MODID, modEventBus);
+        Palette.registerMod(new PaletteMod(modContainer));
 
         ModDataComponents.register(modEventBus);
         MOD_ITEMS.register(modEventBus);
@@ -53,7 +54,7 @@ public class LuminousFlashlights {
         modEventBus.register(this);
         modEventBus.register(LuminousFlashlightsClient.class);
 
-        PaletteUtils.Canvas.useOtherLanguageProvider(MODID, ModLangProvider::new);
+        PaletteUtils.Canvas.createLanguageProvider(MODID, ModLangProvider::new);
 
         PaletteUtils.Canvas.createTagsGenerator(MODID, ModBlockTagsProvider::new, ModItemTagsProvider::new);
         PaletteUtils.Canvas.createRecipeGenerator(MODID, ModRecipeProvider::new);
@@ -96,7 +97,7 @@ public class LuminousFlashlights {
     }
 
     private ItemStack flashlightOfColor(Color color) {
-        ItemStack flashlight = MOD_ITEMS.getItem("flashlight").get().getDefaultInstance().copy();
+        ItemStack flashlight = MOD_ITEMS.getItem("flashlight").getDefaultInstance().copy();
         flashlight.set(ModDataComponents.COLOR.get(), color);
         return flashlight;
     }
